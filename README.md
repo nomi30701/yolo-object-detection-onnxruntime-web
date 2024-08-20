@@ -3,9 +3,10 @@
 <img src="https://github.com/nomi30701/yolo-object-detection-onnxruntime-web/blob/main/preview.png">
 
 This is yolo model object detect web app, powered by ONNXRUNTIME-WEB.
+Support Webgpu and wasm(cpu).
 
 ## Models
-### Availabel Yolo Models
+### Available Yolo Models
 | Model | Input Size | Param. |
 | :-- | :-: | :-: |
 | YOLOv9-T | 640 | **2.0M** | 
@@ -16,6 +17,16 @@ This is yolo model object detect web app, powered by ONNXRUNTIME-WEB.
 
 ### NMS decoder
 Build decoder model from [onnx-modifier](https://github.com/ZhangGe6/onnx-modifier) by myself. It's Custom.
+
+View model graph detail in [netron.app](https://netron.app/)
+
+<details>
+  <summary>Click to see graph.</summary>
+  <img src="https://github.com/nomi30701/yolo-object-detection-onnxruntime-web/blob/main/yolo-decoder-graph-1.png">
+  <img src="https://github.com/nomi30701/yolo-object-detection-onnxruntime-web/blob/main/yolo-decoder-graph-2.png">
+
+
+</details>
 
 ## Setup
 ```bash
@@ -39,5 +50,5 @@ yarn dev # start dev server
     <option value="YOUR_FILE_NAME">YOLO-model</option>
     ...
     ```
-4. select your model.
+4. select your model on page.
 5. DONE!👍
