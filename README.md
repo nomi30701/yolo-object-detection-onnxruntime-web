@@ -23,7 +23,7 @@ View model graph detail in [netron.app](https://netron.app/)
 <details>
   <summary>Click to see graph.</summary>
   <img src="https://github.com/nomi30701/yolo-object-detection-onnxruntime-web/blob/main/yolo-decoder-graph-1.png">
-  <img src="https://github.com/nomi30701/yolo-object-detection-onnxruntime-web/blob/main/yolo-decoder-graph-2.png">
+  <img src="https://github.com/nomi30701/yolo-object-detection-onnxruntime-web/blob/main/yolo-decoder-graph-2.jpg">
 
 
 </details>
