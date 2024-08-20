@@ -1,0 +1,52 @@
+#selector-container {
+  margin-bottom: 1rem;
+}
+
+/* content-cotainer-------------------- */
+#content-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  position: relative;
+
+  border: 2px solid white;
+  border-radius: 5px;
+  min-width: 480px;
+  min-height: 240px;
+}
+#overlay {
+  position: absolute;
+  pointer-events: none;
+}
+#img {
+  display: block;
+  max-width: 640px;
+  max-height: 640px;
+}
+
+/* btn-container------------------------ */
+#btn-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin: 30px;
+
+}
+.btn:disabled {
+  cursor: not-allowed;
+}
+
+/* model status container---------------------- */
+#model-status-container p {
+  font-size: 1.2rem;
+  margin: 10px;
+}
+
+#inferenct-time-container {
+  display: flex;
+  justify-content: center;
+  gap: 8rem;
+
+}
