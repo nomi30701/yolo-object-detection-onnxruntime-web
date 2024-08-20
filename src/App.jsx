@@ -176,7 +176,7 @@ function App() {
             <select name="model-selector" ref={modelRef} onChange={loadModel}>
               <option value="yolov9-t-converted-simplify">yolov9t-2.0M</option>
               <option value="yolov9-s-converted-simplify">yolov9s-7.1M</option>
-              <option value="Gelan-s2">gelan-s2-simplify</option>
+              <option value="gelan-s2-simplify">gelan-s2</option>
               <option value="yolov8n-slim">yolov8n-3.2M</option>
               <option value="yolov8s-slim">yolov8s-11.2M</option>
             </select>
