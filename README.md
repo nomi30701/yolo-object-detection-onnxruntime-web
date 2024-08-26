@@ -42,7 +42,7 @@ yarn dev # start dev server
 
 ## Use other YOLO model
 1. Conver YOLO model to onnx format. Read more on [Ultralytics](https://docs.ultralytics.com/)
-2. Copy your yolo model to `./public` folder.
+2. Copy your yolo model to `./public/models` folder.
 3. Add `<option>` HTML element in `App.jsx`,`value="YOUR_FILE_NAME"`.
     ```HTML
     ...
