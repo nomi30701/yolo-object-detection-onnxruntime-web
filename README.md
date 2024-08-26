@@ -3,6 +3,7 @@
 <img src="https://github.com/nomi30701/yolo-object-detection-onnxruntime-web/blob/main/preview.png">
 
 This is yolo model object detect web app, powered by ONNXRUNTIME-WEB.
+
 Support Webgpu and wasm(cpu).
 
 ## Models
@@ -16,7 +17,7 @@ Support Webgpu and wasm(cpu).
 | YOLOv8-S | 640 | **11.2M** | 
 
 ### NMS decoder
-Build decoder model from [onnx-modifier](https://github.com/ZhangGe6/onnx-modifier) by myself. It's Custom.
+Build decoder model from [onnx-modifier](https://github.com/ZhangGe6/onnx-modifier) by myself.
 
 View model graph detail in [netron.app](https://netron.app/)
 
