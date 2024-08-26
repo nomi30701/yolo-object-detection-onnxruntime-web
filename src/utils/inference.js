@@ -26,8 +26,8 @@ export async function inference(
     // model settings
     const { session, input_shape, tensor_topk, tensor_iou_threshold, tensor_score_threshold } = model_config;
 
+    // pre process input image
     const input_mat_pre_processed = await pre_process(input_mat, input_shape[2], input_shape[3]);
-
     const input_tensor = new ort.Tensor(
         'float32',
         input_mat_pre_processed.data32F,

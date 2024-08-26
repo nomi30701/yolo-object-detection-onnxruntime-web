@@ -8,13 +8,13 @@ Support Webgpu and wasm(cpu).
 
 ## Models
 ### Available Yolo Models
-| Model | Input Size | Param. |
-| :-- | :-: | :-: |
-| YOLOv9-T | 640 | **2.0M** | 
-| YOLOv9-S | 640 | **7.1M** | 
-| GELAN-S2 | 640 |
-| YOLOv8-N | 640 | **3.2M** | 
-| YOLOv8-S | 640 | **11.2M** | 
+| Model | Input Size | Param. | WebGPU |
+| :-- | :-: | :-: | :-: |
+| YOLOv9-T | 640 | **2.0M** | Yes |
+| YOLOv9-S | 640 | **7.1M** | Yes |
+| GELAN-S2 | 640 | | Yes
+| YOLOv8-N | 640 | **3.2M** | No | 
+| YOLOv8-S | 640 | **11.2M** | No |
 
 ### NMS decoder
 Build decoder model from [onnx-modifier](https://github.com/ZhangGe6/onnx-modifier) by myself.

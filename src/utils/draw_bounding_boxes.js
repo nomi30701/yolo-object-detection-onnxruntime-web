@@ -20,6 +20,7 @@ export function draw_bounding_boxes(
 
     // Draw boxes and labels
     predictions.forEach(predict => {
+        // Get color for the class
         const color = Colors.getColor(predict.class_idx, 0.2); // get color with 50% transparency for fill
         const borderColor = Colors.getColor(predict.class_idx, 0.8); 
         const rgbaFillColor = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`;
@@ -42,9 +43,21 @@ export function draw_bounding_boxes(
         const text = `${classes.class[predict.class_idx]} ${(predict.score * 100).toFixed(1)}%`;
         const textWidth = ctx.measureText(text).width;
         const textHeight = parseInt(ctx.font, 10);
-        ctx.fillRect(x1 - 1, y1 - textHeight - 4, textWidth + 4, textHeight + 4);
+
+        // Calculate the Y position for the text
+        let textY = y1 - 5;
+        let rectY = y1 - textHeight - 4;
+
+        // Check if the text will be outside the canvas
+        if (rectY < 0) {
+            // Adjust the Y position to be inside the canvas
+            textY = y1 + textHeight + 5;
+            rectY = y1 + 1;
+        }
+
+        ctx.fillRect(x1 - 1, rectY, textWidth + 4, textHeight + 4);
         ctx.fillStyle = 'white';
-        ctx.fillText(text, x1, y1 - 5);
+        ctx.fillText(text, x1, textY);
     });
 }
 

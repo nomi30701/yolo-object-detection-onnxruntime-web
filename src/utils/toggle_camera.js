@@ -1,8 +1,21 @@
 import { inference } from "./inference";
 
 /**
+ * @typedef {Object} model_config
+ * @property {ort.InferenceSession} session - YOLO and NMS session.
+ * @property {Array[Number]} input_shape - Yolo model input shape.
+ * @property {ort.Tensor} tensor_topk - Topk value for NMS.
+ * @property {ort.Tensor} tensor_iou_threshold - IOU threshold value for NMS.
+ * @property {ort.Tensor} tensor_score_threshold - Score threshold value for NMS.
+ */
+
+/**
  * Toggle camera and inference.
- * @param {HTMLVideoElement} camera_video_el - Camera video element
+ * @param {HTMLVideoElement} camera_video_el - Camera video element.
+ * @param {HTMLCanvasElement} input_canvas_el - Input canvas element for opencv read.
+ * @param {model_config} model_config - Model configuration.
+ * @param {Function} setInferenceTime - Set inference time. useState function.
+ * @param {HTMLCanvasElement} overlay_canvas_el - Show boxes in overlay canvas.
  */
 
 let camera_stream = null;

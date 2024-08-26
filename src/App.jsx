@@ -15,9 +15,6 @@ const tensor_iou_threshold = new ort.Tensor('float32', new Float32Array([iou_thr
 const tensor_score_threshold = new ort.Tensor('float32', new Float32Array([score_threshold]));
 
 function App() {
-
-  console.log('App render');
-
   // settings Ref
   const deviceRef = useRef(null); // device selector
   const modelRef = useRef(null); // model selector
@@ -29,7 +26,6 @@ function App() {
   const overlay_canvasRef = useRef(null); // overlay canvas element
   const input_canvasRef = useRef(null);   // input canvas element
   const camera_videoRef = useRef(null); // camera video element
-  const animation_id_ref = useRef(null); // animation id
   const fileInputRef = useRef(null); // file input element
   const [showVideo, setShowVideo] = useState(false); // show video or image
   const [imageOpened, setImageOpened] = useState(false); // image opened state
@@ -48,21 +44,23 @@ function App() {
 
   // Load model and warm up
   const loadModel = async () => {
-    console.log('loadModel called');
-
     setButtonsDisabled(true);
     const modelInfoEl = modelInfoRef.current;
     modelInfoEl.textContent = "Loading model...";
     modelInfoEl.style.color = "red";
 
     const device = deviceRef.current.value;
-    const model_path = `${window.location.href}/${modelRef.current.value}.onnx`;
+    const model_path = `${window.location.href}/models/${modelRef.current.value}.onnx`;
     
     try {
+      // start timer
       const start = performance.now();
+      
+      // load model
       const yolo_model = await ort.InferenceSession.create(model_path, {executionProviders: [device]});
-      const nms = await ort.InferenceSession.create(`${window.location.href}/yolo-decoder.onnx`);
+      const nms = await ort.InferenceSession.create(`${window.location.href}/yolo-decoder.onnx`); 
 
+      // warm up
       const dummy_input_tensor = new ort.Tensor("float32", new Float32Array(input_shape.reduce((a, b) => a * b)), input_shape);
       const {output0} = await yolo_model.run({ images: dummy_input_tensor });
       const { output_selected } = await nms.run({
@@ -72,11 +70,14 @@ function App() {
         score_threshold: tensor_score_threshold
       });
 
+      // end timer
       const end = performance.now();
       setWarmUpTime((end - start).toFixed(2));
       
+      // dispose tensors and set session
       disposeTensors([dummy_input_tensor, output0, output_selected]);
       setSession({yolo: yolo_model, nms: nms});
+
     } catch (error) {
       modelInfoEl.textContent = "Model loading failed.";
       modelInfoEl.style.color = "red";
@@ -95,11 +96,10 @@ function App() {
 
   // if image loaded
   const handleImageLoad = () => {
-    console.log('handleImageLoad called');
-
-    const src_mat = cv.imread(imgRef.current);
+    const src_mat = cv.imread(imgRef.current); // read image
     
-    overlay_canvasRef.current.width = imgRef.current.width;
+    // set overlay canvas size
+    overlay_canvasRef.current.width = imgRef.current.width; 
     overlay_canvasRef.current.height = imgRef.current.height;
     inference(
       src_mat, 
@@ -112,13 +112,11 @@ function App() {
       },
       setInferenceTime,
       overlay_canvasRef.current
-    );
+    ); // start inference
   };
 
   // if file changed
   const handleFileChange = (event) => {
-    console.log('handleFileChange called');
-
     const file = event.target.files[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
@@ -160,7 +158,7 @@ function App() {
   return (
     <>
       <h1>Yolo object detection App</h1>
-      <h2>ONNX-runtime-web</h2>
+      <h2>Powered by onnxruntime-web</h2>
       <div id='setting-container'>
           <div>
             <label htmlFor="device-selector">Backend:</label>
