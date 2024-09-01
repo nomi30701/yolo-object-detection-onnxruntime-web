@@ -54,7 +54,10 @@ export async function toggle_camera(
     overlay_canvas_el.height = 0;
   } else {
     // get user media
-    camera_stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+    camera_stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: false,
+    });
     camera_video_el.srcObject = camera_stream; // set to <video>
     input_canvas_ctx = input_canvas_el.getContext("2d", {
       willReadFrequently: true,
@@ -69,5 +72,4 @@ export async function toggle_camera(
     continuous = true;
     capture_frame_continuous();
   }
-
 }

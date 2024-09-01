@@ -176,7 +176,7 @@ function App() {
       setInferenceTime,
       overlay_canvasRef.current,
       camera_videoRef.current,
-      input_canvasRef.current,
+      input_canvasRef.current
     );
     setCameraOpened(!cameraOpened);
   };

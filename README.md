@@ -57,8 +57,11 @@ yarn dev # start dev server
 4. select your model on page.
 5. DONE!👍
 > ✨ Support Webgpu
+> 
 > For Yolov10 and v8 onnx format support Webgpu, export model set **`opset=12`**.
 
 > ✨ NMS setting
+> 
 > Yolov10 does not need nms.
+> 
 > If custom model are yolov10, add **`"yolov10"`** in file name.
