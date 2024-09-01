@@ -1,5 +1,11 @@
-#selector-container {
-  margin-bottom: 1rem;
+h1 {
+  margin-bottom: 0.5rem;
+}
+h2 {
+  margin-top: 0;
+}
+#setting-container {
+  margin: 1.5rem 0;
 }
 
 /* content-cotainer-------------------- */
@@ -19,10 +25,11 @@
   position: absolute;
   pointer-events: none;
 }
-#img {
+#content-container img {
   display: block;
   max-width: 640px;
   max-height: 640px;
+  border-radius: 5px;
 }
 
 /* btn-container------------------------ */
@@ -40,13 +47,12 @@
 
 /* model status container---------------------- */
 #model-status-container p {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   margin: 10px;
 }
 
 #inferenct-time-container {
   display: flex;
   justify-content: center;
-  gap: 8rem;
-
+  gap: 6rem;
 }

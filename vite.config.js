@@ -16,4 +16,5 @@ export default defineConfig({
     }),
   ],
   assetsInclude: ["**/*.onnx"],
+  base: "/yolo-object-detection-onnxruntime-web/"
 })

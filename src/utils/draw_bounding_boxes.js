@@ -21,7 +21,7 @@ export function draw_bounding_boxes(
     // Draw boxes and labels
     predictions.forEach(predict => {
         // Get color for the class
-        const color = Colors.getColor(predict.class_idx, 0.2); // get color with 50% transparency for fill
+        const color = Colors.getColor(predict.class_idx, 0.2); // get color with 20% transparency
         const borderColor = Colors.getColor(predict.class_idx, 0.8); 
         const rgbaFillColor = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`;
         const rgbaBorderColor = `rgba(${borderColor[0]}, ${borderColor[1]}, ${borderColor[2]}, ${borderColor[3]})`;
@@ -40,7 +40,7 @@ export function draw_bounding_boxes(
         // Draw text and background
         ctx.fillStyle = rgbaBorderColor;
         ctx.font = '16px Arial';
-        const text = `${classes.class[predict.class_idx]} ${(predict.score * 100).toFixed(1)}%`;
+        const text = `${classes.class[predict.class_idx]} ${predict.score.toFixed(2)}`;
         const textWidth = ctx.measureText(text).width;
         const textHeight = parseInt(ctx.font, 10);
 
