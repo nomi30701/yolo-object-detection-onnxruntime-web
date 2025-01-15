@@ -1,6 +1,6 @@
 import "./assets/App.css";
 import * as ort from "onnxruntime-web/webgpu";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { toggle_camera } from "./utils/toggle_camera.js";
 import { inference_pipline } from "./utils/inference_pipline.js";
 
@@ -127,49 +127,43 @@ function App() {
     tensors.forEach((tensor) => tensor.dispose());
   };
 
-  // if image loaded
-  const handleImageLoad = () => {
-    overlay_canvasRef.current.width = input_imgRef.current.width; // set overlay size
+  const handleImageLoad = useCallback(() => {
+    overlay_canvasRef.current.width = input_imgRef.current.width;
     overlay_canvasRef.current.height = input_imgRef.current.height;
 
-    const src_mat = cv.imread(input_imgRef.current); // read image
+    const src_mat = cv.imread(input_imgRef.current);
     inference_pipline(
       src_mat,
       session,
       setInferenceTime,
       overlay_canvasRef.current
-    ); // start inference
-  };
+    );
+  }, [session]);
 
-  // handle close image
-  const handleCloseImage = () => {
+  const handleCloseImage = useCallback(() => {
     setImageSrc(null);
-
-    // Clear the overlay canvas
     const overlay_canvas_el = overlay_canvasRef.current;
     overlay_canvas_el.width = 0;
     overlay_canvas_el.height = 0;
-  };
+  }, []);
 
-  // if image file add
-  const imgFileChange = (event) => {
+  const imgFileChange = useCallback((event) => {
     const file = event.target.files[0];
     if (file) {
-      setImageSrc(URL.createObjectURL(file)); // set image URL
+      setImageSrc(URL.createObjectURL(file));
     }
-  };
+  }, []);
 
-  // if model file add
-  const modelFileChange = (event) => {
+  const modelFileChange = useCallback((event) => {
     const file = event.target.files[0];
     if (file) {
       const fileName = file.name.replace(".onnx", "");
-      setCustomModels([
-        ...customModels,
+      setCustomModels((prevModels) => [
+        ...prevModels,
         { name: fileName, url: URL.createObjectURL(file) },
       ]);
     }
-  };
+  }, []);
 
   // handle toggle camera
   const handleToggleCamera = () => {
