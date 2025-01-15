@@ -69,8 +69,10 @@ function App() {
     try {
       const start = performance.now(); // start timer
 
+      // env flags
+      ort.env.wasm.wasmPaths = `./`;
+
       // load model
-      // If set env.wasm.numThreads, please read onnxruntime-web document.
       const yolo_model = await ort.InferenceSession.create(model_path, {
         executionProviders: [device],
       });
