@@ -7,6 +7,7 @@ import { inference_pipline } from "./inference_pipline";
  * @param {HTMLCanvasElement} overlay_canvas_el - Show boxes in overlay canvas.
  * @param {HTMLVideoElement} camera_video_el - Camera video element.
  * @param {HTMLCanvasElement} input_canvas_el - Input canvas element for opencv read.
+ * @param {string} selectedCamera - Selected camera device ID.
  */
 
 let camera_stream = null;
@@ -18,7 +19,8 @@ export async function toggle_camera(
   setInferenceTime,
   overlay_canvas_el,
   camera_video_el,
-  input_canvas_el
+  input_canvas_el,
+  selectedCamera
 ) {
   // capture frame loop
   const capture_frame_continuous = async () => {
@@ -55,7 +57,7 @@ export async function toggle_camera(
   } else {
     // get user media
     camera_stream = await navigator.mediaDevices.getUserMedia({
-      video: true,
+      video: { deviceId: selectedCamera ? { exact: selectedCamera } : undefined },
       audio: false,
     });
     camera_video_el.srcObject = camera_stream; // set to <video>

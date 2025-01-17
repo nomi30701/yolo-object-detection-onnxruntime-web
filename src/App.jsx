@@ -39,6 +39,8 @@ function App() {
   const imgFileInputRef = useRef(null); // img file input element
   const [buttonsDisabled, setButtonsDisabled] = useState(false); // set buttons disabled
   const [cameraOpened, setCameraOpened] = useState(false); // set camera button opened
+  const [cameras, setCameras] = useState([]); // available cameras
+  const [selectedCamera, setSelectedCamera] = useState(""); // selected camera
 
   // state Ref
   const [inferenceTime, setInferenceTime] = useState(0); // set inference time
@@ -48,6 +50,7 @@ function App() {
   // if window on load
   useEffect(() => {
     loadModel();
+    getCameras();
   }, []);
 
   // Load model and warm up
@@ -165,16 +168,36 @@ function App() {
     }
   }, []);
 
+  const getCameras = async () => {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const videoDevices = devices.filter((device) => device.kind === "videoinput");
+    setCameras(videoDevices);
+    if (videoDevices.length > 0) {
+      setSelectedCamera(videoDevices[0].deviceId);
+    }
+  };
+
+  const handleCameraChange = (event) => {
+    setSelectedCamera(event.target.value);
+  };
+
   // handle toggle camera
-  const handleToggleCamera = () => {
-    toggle_camera(
-      session,
-      setInferenceTime,
-      overlay_canvasRef.current,
-      camera_videoRef.current,
-      input_canvasRef.current
-    );
-    setCameraOpened(!cameraOpened);
+  const handleToggleCamera = async () => {
+    if (!cameraOpened) {
+      await getCameras();
+      const cameraSelect = document.getElementById("camera-selector");
+      cameraSelect.focus();
+    } else {
+      toggle_camera(
+        session,
+        setInferenceTime,
+        overlay_canvasRef.current,
+        camera_videoRef.current,
+        input_canvasRef.current,
+        selectedCamera
+      );
+      setCameraOpened(!cameraOpened);
+    }
   };
 
   return (
@@ -197,7 +220,6 @@ function App() {
           </select>
         </div>
 
-        {/* add model here */}
         <div>
           <label htmlFor="model-selector">Model:</label>
           <select
@@ -220,6 +242,22 @@ function App() {
             ))}
           </select>
         </div>
+          <div id="camera-selector-container">
+          <label htmlFor="camera-selector">Select Camera:</label>
+          <select
+            id="camera-selector"
+            value={selectedCamera}
+            onChange={handleCameraChange}
+          >
+            {cameras.map((camera, index) => (
+              <option key={index} value={camera.deviceId}>
+                {camera.label || `Camera ${index + 1}`}
+              </option>
+            ))}
+          </select>
+        </div>
+
+
       </div>
 
       <div id="content-container">
@@ -264,7 +302,7 @@ function App() {
           {imageSrc ? "Close Image" : "Open Image"}
         </button>
         <button
-          disabled={buttonsDisabled || imageSrc}
+          disabled={buttonsDisabled || imageSrc || cameras.length === 0}
           onClick={handleToggleCamera}
         >
           {cameraOpened ? "Close Camera" : "Open Camera"}
