@@ -54,9 +54,8 @@ yarn dev # start dev server
   # Export the model
   model.export(format="onnx", opset=12)  
   ```
-1. Copy your yolo model to `./public/models` folder, or Click `Add model` button
-2. Add `<option>` HTML element in `App.jsx`,`value="YOUR_FILE_NAME"`. 
-   (Also can click "Add model" button)
+2. Copy your yolo model to `./public/models` folder. (Also can click **`Add model`** button)
+3. Add `<option>` HTML element in `App.jsx`,`value="YOUR_FILE_NAME"`. 
     ```HTML
     ...
     <option value="YOUR_FILE_NAME">CUSTOM-MODEL</option>
@@ -64,8 +63,8 @@ yarn dev # start dev server
     <option value="yolov10s-simplify">yolov10s-7.2M</option>
     ...
     ```
-3. select your model on page.
-4. DONE!👍
+4. select your model on page.
+5. DONE!👍
 > ✨ Support Webgpu
 > 
 > For onnx format support Webgpu, export model set **`opset=12`**.

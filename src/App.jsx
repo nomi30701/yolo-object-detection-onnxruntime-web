@@ -27,7 +27,7 @@ function App() {
   const [session, setSession] = useState(null); // model sessions
   const modelFileInputRef = useRef(null); // model file input element
   const [customModels, setCustomModels] = useState([]); // custom models
-  const [isNMSChecked, setIsNMSChecked] = useState(false); // nms checkbox
+  const [isNMSChecked, setIsNMSChecked] = useState(true); // nms checkbox
 
   // content Ref
   const [imageSrc, setImageSrc] = useState(""); // image url source
@@ -47,7 +47,7 @@ function App() {
   const [inferenceTime, setInferenceTime] = useState(0); // set inference time
   const [warmUpTime, setWarmUpTime] = useState(0); // set warm up time
   const modelInfoRef = useRef(null); // model info <p> element
-  
+
   // if window on load
   useEffect(() => {
     loadModel();
@@ -71,10 +71,10 @@ function App() {
 
     try {
       const start = performance.now(); // start timer
-  
+
       // env flags
       ort.env.wasm.wasmPaths = `./`;
-  
+
       // load model
       const yolo_model = await ort.InferenceSession.create(model_path, {
         executionProviders: [device],
@@ -82,7 +82,7 @@ function App() {
       const nms = await ort.InferenceSession.create(
         `${window.location.href}/yolo-decoder.onnx`
       );
-  
+
       // warm up
       const dummy_input_tensor = new ort.Tensor(
         "float32",
@@ -96,11 +96,11 @@ function App() {
         iou_threshold: tensor_iou_threshold,
         score_threshold: tensor_score_threshold,
       });
-  
+
       // end timer
       const end = performance.now();
       setWarmUpTime((end - start).toFixed(2));
-  
+
       // dispose tensors and set session
       disposeTensors([dummy_input_tensor, output0, output_selected]);
       setSession({
@@ -144,7 +144,7 @@ function App() {
   }, [session]);
 
   const handleCloseImage = useCallback(() => {
-    setImageSrc('');
+    setImageSrc("");
     const overlay_canvas_el = overlay_canvasRef.current;
     overlay_canvas_el.width = 0;
     overlay_canvas_el.height = 0;
@@ -171,7 +171,9 @@ function App() {
 
   const getCameras = async () => {
     const devices = await navigator.mediaDevices.enumerateDevices();
-    const videoDevices = devices.filter((device) => device.kind === "videoinput");
+    const videoDevices = devices.filter(
+      (device) => device.kind === "videoinput"
+    );
     setCameras(videoDevices);
     if (videoDevices.length > 0) {
       setSelectedCamera(videoDevices[0].deviceId);
@@ -203,7 +205,6 @@ function App() {
     setIsNMSChecked(!selectedModel.includes("yolov10"));
     loadModel();
   };
-  
 
   return (
     <>
@@ -257,7 +258,8 @@ function App() {
               type="checkbox"
               id="NMS-checkbox"
               checked={isNMSChecked}
-              onChange={handleNMSChange}></input>
+              onChange={handleNMSChange}
+            ></input>
           </div>
         </div>
 

@@ -57,7 +57,9 @@ export async function toggle_camera(
   } else {
     // get user media
     camera_stream = await navigator.mediaDevices.getUserMedia({
-      video: { deviceId: selectedCamera ? { exact: selectedCamera } : undefined },
+      video: {
+        deviceId: selectedCamera ? { exact: selectedCamera } : undefined,
+      },
       audio: false,
     });
     camera_video_el.srcObject = camera_stream; // set to <video>

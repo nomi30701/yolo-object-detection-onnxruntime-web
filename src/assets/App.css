@@ -40,7 +40,6 @@ h2 {
   align-items: center;
   gap: 30px;
   margin: 30px;
-
 }
 .btn:disabled {
   cursor: not-allowed;
