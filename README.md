@@ -1,6 +1,6 @@
 # yolo object detect onnxruntime-web
 
-<img src="https://github.com/nomi30701/yolo-object-detection-onnxruntime-web/blob/main/preview.png" height=60% width=60%>
+<img src="https://github.com/nomi30701/yolo-object-detection-onnxruntime-web/blob/main/preview.png" height=80% width=80%>
 
 This is yolo model object detect web app, powered by ONNXRUNTIME-WEB.
 
