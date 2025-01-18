@@ -8,7 +8,7 @@ import { inference_pipline } from "./utils/inference_pipline.js";
 const input_shape = [1, 3, 640, 640];
 const topk = 100;
 const iou_threshold = 0.45;
-const score_threshold = 0.25;
+const score_threshold = 0.35;
 
 const tensor_topk = new ort.Tensor("int32", new Int32Array([topk]));
 const tensor_iou_threshold = new ort.Tensor(
@@ -27,6 +27,7 @@ function App() {
   const [session, setSession] = useState(null); // model sessions
   const modelFileInputRef = useRef(null); // model file input element
   const [customModels, setCustomModels] = useState([]); // custom models
+  const [isNMSChecked, setIsNMSChecked] = useState(false); // nms checkbox
 
   // content Ref
   const [imageSrc, setImageSrc] = useState(""); // image url source
@@ -46,12 +47,12 @@ function App() {
   const [inferenceTime, setInferenceTime] = useState(0); // set inference time
   const [warmUpTime, setWarmUpTime] = useState(0); // set warm up time
   const modelInfoRef = useRef(null); // model info <p> element
-
+  
   // if window on load
   useEffect(() => {
     loadModel();
     getCameras();
-  }, []);
+  }, [customModels]);
 
   // Load model and warm up
   const loadModel = async () => {
@@ -59,7 +60,6 @@ function App() {
     const modelInfoEl = modelInfoRef.current;
     modelInfoEl.textContent = "Loading model...";
     modelInfoEl.style.color = "red";
-
     const device = deviceSelectorRef.current.value;
     const selectedModel = modelSelectorRef.current.value;
     const customModel = customModels.find(
@@ -71,10 +71,10 @@ function App() {
 
     try {
       const start = performance.now(); // start timer
-
+  
       // env flags
       ort.env.wasm.wasmPaths = `./`;
-
+  
       // load model
       const yolo_model = await ort.InferenceSession.create(model_path, {
         executionProviders: [device],
@@ -82,7 +82,7 @@ function App() {
       const nms = await ort.InferenceSession.create(
         `${window.location.href}/yolo-decoder.onnx`
       );
-
+  
       // warm up
       const dummy_input_tensor = new ort.Tensor(
         "float32",
@@ -96,18 +96,18 @@ function App() {
         iou_threshold: tensor_iou_threshold,
         score_threshold: tensor_score_threshold,
       });
-
+  
       // end timer
       const end = performance.now();
       setWarmUpTime((end - start).toFixed(2));
-
+  
       // dispose tensors and set session
       disposeTensors([dummy_input_tensor, output0, output_selected]);
       setSession({
         yolo: yolo_model,
         nms: nms,
         config: {
-          isV10: selectedModel.includes("yolov10"), // if "yolov10" in selected model file name
+          isNMS: isNMSChecked,
           input_shape,
           tensor_topk,
           tensor_iou_threshold,
@@ -144,7 +144,7 @@ function App() {
   }, [session]);
 
   const handleCloseImage = useCallback(() => {
-    setImageSrc(null);
+    setImageSrc('');
     const overlay_canvas_el = overlay_canvasRef.current;
     overlay_canvas_el.width = 0;
     overlay_canvas_el.height = 0;
@@ -154,6 +154,7 @@ function App() {
     const file = event.target.files[0];
     if (file) {
       setImageSrc(URL.createObjectURL(file));
+      event.target.value = null; // Reset input value to allow selecting the same file
     }
   }, []);
 
@@ -181,24 +182,28 @@ function App() {
     setSelectedCamera(event.target.value);
   };
 
-  // handle toggle camera
-  const handleToggleCamera = async () => {
-    if (!cameraOpened) {
-      await getCameras();
-      const cameraSelect = document.getElementById("camera-selector");
-      cameraSelect.focus();
-    } else {
-      toggle_camera(
-        session,
-        setInferenceTime,
-        overlay_canvasRef.current,
-        camera_videoRef.current,
-        input_canvasRef.current,
-        selectedCamera
-      );
-      setCameraOpened(!cameraOpened);
-    }
+  // handle open camera
+  const handleOpenCamera = async () => {
+    toggle_camera(
+      session,
+      setInferenceTime,
+      overlay_canvasRef.current,
+      camera_videoRef.current,
+      input_canvasRef.current,
+      selectedCamera
+    );
+    setCameraOpened(!cameraOpened);
   };
+  const handleNMSChange = (event) => {
+    setIsNMSChecked(event.target.checked);
+    loadModel();
+  };
+  const handleModelChange = (event) => {
+    const selectedModel = event.target.value;
+    setIsNMSChecked(!selectedModel.includes("yolov10"));
+    loadModel();
+  };
+  
 
   return (
     <>
@@ -221,28 +226,42 @@ function App() {
         </div>
 
         <div>
-          <label htmlFor="model-selector">Model:</label>
-          <select
-            name="model-selector"
-            ref={modelSelectorRef}
-            onChange={loadModel}
-          >
-            {/* <option value="YOUR_FILE_NAME">CUSTOM-MODEL</option> */}
-            <option value="yolov10n-simplify">yolov10n-2.3M</option>
-            <option value="yolov10s-simplify">yolov10s-7.2M</option>
-            <option value="yolov9t-simplify">yolov9t-2.0M</option>
-            <option value="yolov9s-simplify">yolov9s-7.1M</option>
-            <option value="gelan-s2-simplify">gelan-s2</option>
-            <option value="yolov8n-simplify">yolov8n-3.2M</option>
-            <option value="yolov8s-simplify">yolov8s-11.2M</option>
-            {customModels.map((model, index) => (
-              <option key={index} value={model.url}>
-                {model.name}
-              </option>
-            ))}
-          </select>
+          <div>
+            <label htmlFor="model-selector">Model:</label>
+            <select
+              name="model-selector"
+              ref={modelSelectorRef}
+              onChange={handleModelChange}
+            >
+              {/* <option value="YOUR_FILE_NAME">CUSTOM-MODEL</option> */}
+              <option value="yolo11n-simplify">yolo11n-2.6M</option>
+              <option value="yolo11s-simplify">yolo11s-9.4M</option>
+              <option value="yolo11m-simplify">yolo11m-20.1M</option>
+              <option value="yolov10n-simplify">yolov10n-2.3M</option>
+              <option value="yolov10s-simplify">yolov10s-7.2M</option>
+              <option value="yolov9t-simplify">yolov9t-2.0M</option>
+              <option value="yolov9s-simplify">yolov9s-7.1M</option>
+              <option value="gelan-s2-simplify">gelan-s2</option>
+              <option value="yolov8n-simplify">yolov8n-3.2M</option>
+              <option value="yolov8s-simplify">yolov8s-11.2M</option>
+              {customModels.map((model, index) => (
+                <option key={index} value={model.url}>
+                  {model.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="NMS-checkbox">NMS:</label>
+            <input
+              type="checkbox"
+              id="NMS-checkbox"
+              checked={isNMSChecked}
+              onChange={handleNMSChange}></input>
+          </div>
         </div>
-          <div id="camera-selector-container">
+
+        <div id="camera-selector-container">
           <label htmlFor="camera-selector">Select Camera:</label>
           <select
             id="camera-selector"
@@ -256,8 +275,6 @@ function App() {
             ))}
           </select>
         </div>
-
-
       </div>
 
       <div id="content-container">
@@ -303,7 +320,7 @@ function App() {
         </button>
         <button
           disabled={buttonsDisabled || imageSrc || cameras.length === 0}
-          onClick={handleToggleCamera}
+          onClick={handleOpenCamera}
         >
           {cameraOpened ? "Close Camera" : "Open Camera"}
         </button>

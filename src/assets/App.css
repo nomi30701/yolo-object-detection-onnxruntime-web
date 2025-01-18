@@ -6,6 +6,7 @@ h2 {
 }
 #setting-container {
   margin: 1.5rem 0;
+  text-align: center;
 }
 
 /* content-cotainer-------------------- */
@@ -18,8 +19,8 @@ h2 {
 
   border: 2px solid white;
   border-radius: 5px;
-  min-width: 480px;
-  min-height: 240px;
+  min-width: 640px;
+  min-height: 320px;
 }
 #overlay {
   position: absolute;

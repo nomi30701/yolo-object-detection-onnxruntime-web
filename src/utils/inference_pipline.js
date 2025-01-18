@@ -32,7 +32,7 @@ export async function inference_pipline(
   // model settings
   const { yolo, nms, config } = model_config;
   const {
-    isV10,
+    isNMS,
     input_shape,
     tensor_topk,
     tensor_iou_threshold,
@@ -68,7 +68,7 @@ export async function inference_pipline(
   const score_threshold = tensor_score_threshold.data[0];
 
   // post process
-  if (isV10) {
+  if (isNMS) {
     // Yolo v10 does not need NMS
     // post process
     for (let i = 0; i < output0.dims[1]; i++) {
