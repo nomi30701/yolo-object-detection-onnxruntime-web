@@ -45,15 +45,15 @@ yarn dev # start dev server
 
 ## Use other YOLO model
 1. Conver YOLO model to onnx format. Read more on [Ultralytics](https://docs.ultralytics.com/).
-  ```Python
-  from ultralytics import YOLO
+    ```Python
+    from ultralytics import YOLO
 
-  # Load a model
-  model = YOLO("yolo11n.pt")
+    # Load a model
+    model = YOLO("yolo11n.pt")
 
-  # Export the model
-  model.export(format="onnx", opset=12)  
-  ```
+    # Export the model
+    model.export(format="onnx", opset=12)  
+    ```
 2. Copy your yolo model to `./public/models` folder. (Also can click **`Add model`** button)
 3. Add `<option>` HTML element in `App.jsx`,`value="YOUR_FILE_NAME"`. 
     ```HTML
