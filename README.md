@@ -1,4 +1,4 @@
-****# yolo object detect onnxruntime-web
+# yolo object detect onnxruntime-web
 
 <img src="https://github.com/nomi30701/yolo-object-detection-onnxruntime-web/blob/main/preview.png" height=60% width=60%>
 
@@ -24,14 +24,12 @@ Support Webgpu and wasm(cpu).
 ### NMS decoder
 Build decoder model from [onnx-modifier](https://github.com/ZhangGe6/onnx-modifier) by myself.
 
-View model graph detail in [netron.app](https://netron.app/)
+View model graph detail in [netron.app](https://netron.app/?url=https://github.com/nomi30701/yolo-object-detection-onnxruntime-web/blob/main/public/yolo-decoder.onnx)
 
 <details>
   <summary>Click to see graph.</summary>
   <img src="https://github.com/nomi30701/yolo-object-detection-onnxruntime-web/blob/main/yolo-decoder-graph-1.png" height=70% width=70%>
   <img src="https://github.com/nomi30701/yolo-object-detection-onnxruntime-web/blob/main/yolo-decoder-graph-2.jpg" height=70% width=70%>
-
-
 </details>
 
 ## Setup
@@ -46,9 +44,18 @@ yarn dev # start dev server
 ```
 
 ## Use other YOLO model
-1. Conver YOLO model to onnx format. Read more on [Ultralytics](https://docs.ultralytics.com/) or [yolov9_2_onnx.ipynb](https://colab.research.google.com/github/nomi30701/yolo-model-benchmark-onnxruntime-web/blob/main/yolov9_2_onnx.ipynb) example.
-2. Copy your yolo model to `./public/models` folder.
-3. Add `<option>` HTML element in `App.jsx`,`value="YOUR_FILE_NAME"`. 
+1. Conver YOLO model to onnx format. Read more on [Ultralytics](https://docs.ultralytics.com/).
+  ```Python
+  from ultralytics import YOLO
+
+  # Load a model
+  model = YOLO("yolo11n.pt")
+
+  # Export the model
+  model.export(format="onnx", opset=12)  
+  ```
+1. Copy your yolo model to `./public/models` folder, or Click `Add model` button
+2. Add `<option>` HTML element in `App.jsx`,`value="YOUR_FILE_NAME"`. 
    (Also can click "Add model" button)
     ```HTML
     ...
@@ -57,14 +64,16 @@ yarn dev # start dev server
     <option value="yolov10s-simplify">yolov10s-7.2M</option>
     ...
     ```
-4. select your model on page.
-5. DONE!👍
+3. select your model on page.
+4. DONE!👍
 > ✨ Support Webgpu
 > 
-> For Yolov10 and v8 onnx format support Webgpu, export model set **`opset=12`**.
+> For onnx format support Webgpu, export model set **`opset=12`**.
 
 > ✨ NMS setting
 > 
-> Yolov10 does not need nms.
-> 
-> If custom model are yolov10, add **`"yolov10"`** in file name.
+> If custom model does not need nms, please click **`NMS check box`**.
+
+> ⚠️ Classes label
+>
+> If your model are custom data (classes), please update `./src/utils/yolo_classes.json` classes label.
