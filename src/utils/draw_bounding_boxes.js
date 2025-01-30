@@ -3,17 +3,17 @@ import classes from "./yolo_classes.json";
 /**
  * Draw bounding boxes in overlay canvas.
  * @param {Array[Object]} predictions - Bounding boxes, class and score objects
- * @param {HTMLCanvasElement} overlay_canvas_el - Show boxes in overlay canvas element.
+ * @param {HTMLCanvasElement} overlay_el - Show boxes in overlay canvas element.
  */
-export function draw_bounding_boxes(predictions, overlay_canvas_el) {
-  const ctx = overlay_canvas_el.getContext("2d");
+export async function draw_bounding_boxes(predictions, overlay_el) {
+  const ctx = overlay_el.getContext("2d");
 
-  // clean overlay canvas
-  ctx.clearRect(0, 0, overlay_canvas_el.width, overlay_canvas_el.height);
+  // Clear the canvas
+  ctx.clearRect(0, 0, overlay_el.width, overlay_el.height);
 
   // Calculate diagonal length of the canvas
   const diagonalLength = Math.sqrt(
-    Math.pow(overlay_canvas_el.width, 2) + Math.pow(overlay_canvas_el.height, 2)
+    Math.pow(overlay_el.width, 2) + Math.pow(overlay_el.height, 2)
   );
   const lineWidth = diagonalLength / 250;
 
