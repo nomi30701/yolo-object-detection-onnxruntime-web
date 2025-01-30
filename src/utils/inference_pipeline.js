@@ -23,7 +23,6 @@ export const inference_pipeline = async (input_el, sessionsConfig) => {
   //   sessionsConfig.input_shape[2],
   //   sessionsConfig.input_shape[3]
   // );
-  // src_mat.delete();
 
   const [src_mat_preProcessed, div_width, div_height] =
     preProcess_dynamic(src_mat);
