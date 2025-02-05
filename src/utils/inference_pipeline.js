@@ -13,6 +13,8 @@ import * as ort from "onnxruntime-web/webgpu";
  * Yolov11 inference pipeline.
  * @param {(HTMLImageElement|HTMLCanvasElement)} input_el - Input <img> or <canvas> element for detect.
  * @param {sessionsConfig} sessionsConfig - Configuration for the model.
+ *
+ * @returns {[Array[Object], Number]} - Array of predictions and inference time.
  */
 export const inference_pipeline = async (input_el, sessionsConfig) => {
   const src_mat = cv.imread(input_el);

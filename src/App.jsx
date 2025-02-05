@@ -4,9 +4,7 @@ import * as ort from "onnxruntime-web/webgpu";
 import { model_loader } from "./utils/model_loader";
 import { inference_pipeline } from "./utils/inference_pipeline";
 import { draw_bounding_boxes } from "./utils/draw_bounding_boxes";
-
-// TODO: add border loading animation for model info.
-// TODO: add details for object detection.
+import classes from "./utils/yolo_classes.json";
 
 // config
 const input_shape = [1, 3, 640, 640];
@@ -49,19 +47,22 @@ function App() {
   const [warnUpTime, setWarnUpTime] = useState(0);
   const [inferenceTime, setInferenceTime] = useState(0);
   const modelStatusRef = useRef(null);
+  const [details, setDetails] = useState([]);
 
   // button Refs
   const openImageRef = useRef(null);
+  const [isModelLoaded, setIsModelLoaded] = useState(false);
 
   useEffect(() => {
     loadModel();
     getCameras();
   }, []);
 
-  const loadModel = async () => {
+  const loadModel = useCallback(async () => {
     const modelStatusEl = modelStatusRef.current;
     modelStatusEl.textContent = "Loading model...";
     modelStatusEl.style.color = "red";
+    setIsModelLoaded(false);
 
     const device = deviceRef.current.value;
     const selectedModel = modelRef.current.value;
@@ -97,12 +98,13 @@ function App() {
       modelStatusEl.textContent = "Model loaded";
       modelStatusEl.style.color = "green";
       setWarnUpTime((end - start).toFixed(2));
+      setIsModelLoaded(true);
     } catch (error) {
       modelStatusEl.textContent = "Model loading failed";
       modelStatusEl.style.color = "red";
       console.error(error);
     }
-  };
+  }, [customModels]);
 
   // handles
   const handle_AddModel = useCallback((event) => {
@@ -132,6 +134,7 @@ function App() {
       imgRef.current,
       sessionsConfig
     );
+    setDetails(results);
     setInferenceTime(results_inferenceTime);
     draw_bounding_boxes(results, overlayRef.current);
   }, [sessionsConfig]);
@@ -192,6 +195,7 @@ function App() {
         inputCanvasRef.current,
         sessionsConfig
       );
+      setDetails(results);
       setInferenceTime(results_inferenceTime);
       draw_bounding_boxes(results, overlayRef.current);
       requestAnimationFrame(() => handle_frame_continuous(ctx));
@@ -262,7 +266,7 @@ function App() {
       <div id="btn-container" className="container flex justify-around">
         <button
           className="btn"
-          disabled={camera_stream}
+          disabled={camera_stream || !isModelLoaded}
           onClick={() => {
             if (!imgSrc) {
               openImageRef.current.click();
@@ -287,7 +291,7 @@ function App() {
         <button
           className="btn"
           onClick={handle_ToggleCamera}
-          disabled={cameras.length === 0 || imgSrc}
+          disabled={cameras.length === 0 || imgSrc || !isModelLoaded}
         >
           {camera_stream ? "Close Camera" : "Open Camera"}
         </button>
@@ -317,8 +321,58 @@ function App() {
             <span className="text-lime-500">{inferenceTime}ms</span>
           </p>
         </div>
-        <p ref={modelStatusRef}>Model not loaded</p>
+        <p
+          className={isModelLoaded ? "" : "animate-text-loading"}
+          ref={modelStatusRef}
+        >
+          Model not loaded
+        </p>
       </div>
+
+      <details className="text-gray-200 group" open>
+        <summary className="my-5 hover:text-gray-400 cursor-pointer transition-colors duration-300">
+          Detected objects
+        </summary>
+        <div
+          className="transition-all duration-300 ease-in-out transform origin-top
+                  group-open:animate-details-show"
+        >
+          <table
+            className="text-left w-1/2 mx-auto border-collapse table-auto text-sm 
+                bg-gray-800 rounded-md overflow-hidden"
+          >
+            <thead className="bg-gray-700">
+              <tr>
+                <th className="border-b border-gray-600 p-4 text-gray-100">
+                  Number
+                </th>
+                <th className="border-b border-gray-600 p-4 text-gray-100">
+                  ClassName
+                </th>
+                <th className="border-b border-gray-600 p-4 text-gray-100">
+                  Confidence
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {details.map((item, index) => (
+                <tr
+                  key={index}
+                  className="hover:bg-gray-700 transition-colors text-gray-300"
+                >
+                  <td className="border-b border-gray-600 p-4">{index + 1}</td>
+                  <td className="border-b border-gray-600 p-4">
+                    {classes.class[item.class_idx]}
+                  </td>
+                  <td className="border-b border-gray-600 p-4">
+                    {(item.score * 100).toFixed(1)}%
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </details>
     </>
   );
 }

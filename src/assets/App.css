@@ -1,19 +1,53 @@
 @import "tailwindcss";
 
 .btn {
-    @apply bg-[#1a1a1a] font-bold py-2 px-4 rounded-lg transition
+  @apply bg-[#1a1a1a] font-bold py-2 px-4 rounded-lg transition
     border-2 border-transparent hover:border-[#646cff] 
     active:bg-[#404040] focus:ring-2 focus:ring-violet-500
     disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-transparent
     disabled:active:bg-[#1a1a1a];
-    
 }
 select {
-    @apply rounded-md bg-[#1a1a1a]
+  @apply rounded-md bg-[#1a1a1a];
 }
 .container {
-    @apply my-6 py-2 px-8 border border-slate-500 rounded-lg;
+  @apply my-6 py-2 px-8 border border-slate-500 rounded-lg;
 }
 #setting-container label {
-    @apply mr-2
+  @apply mr-2;
+}
+
+@theme {
+  --animate-text-loading: textLoading 1.5s ease-in-out infinite;
+  --animate-details-show: details-show 300ms ease-in-out;
+
+  
+  @keyframes textLoading {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+  }
+  @keyframes details-show {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+.animate-text-loading {
+  animation: var(--animate-text-loading);
+  display: inline-block;
+}
+
+.animate-details-show {
+  animation: var(--animate-details-show);
 }
